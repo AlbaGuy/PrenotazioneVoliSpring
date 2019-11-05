@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Registration</title>
+<th:block th:include="fragments/headerinc :: head"></th:block>
+</head>
+<body>
+	<th:block th:include="fragments/header :: header"></th:block>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+
+$(document).ready(function(){
+	  $("#invio").click(function(){
+	  });
+	});
+	
+ function reverse(data){
+	return data.replace(/^(\d{4})-(\d{2})-(\d{2})$/g,'$3/$2/$1');
+}
+  
+</script>
+
+<script th:inline="javascript">
+	$('#myModal').on('shown.bs.modal', function() {
+		$('#myInput').trigger('focus')
+	})
+	
+</script>
+
+	<div class="container" sec:authorize="isAuthenticated()AND hasRole('ROLE_ADMIN')" style="margin-top:100px">
+		<div class="row justify-content-center">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-header">Aggiungi Volo</div>
+
+					<div class="card-body">
+						<form action="#" th:action="@{/newFlight}"  th:object="${flightForm}"
+							method="POST">
+
+							
+
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Data Partenza</label>
+
+								<div class="col-md-6">
+									<input type="datetime" id="departureDate" class="form-control"
+										th:field="*{departureDate}" placeholder="YYYY-MM-DD HH:MM:SS" required
+										autocomplete="Data Partenza" autofocus>
+								</div>
+								
+							</div>
+							
+								<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Città di partenza</label>
+
+								<div class="col-md-6">
+									<input type="text" id="seats" class="form-control"
+										th:field="*{departure}" placeholder="Città di partenza" required
+										autocomplete="Città di partenza" autofocus>
+									
+								</div>
+								</div>
+							
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Città d' arrivo</label>
+
+								<div class="col-md-6">
+									<input type="text" id="seats" class="form-control"
+										th:field="*{destination}" placeholder="Destinazione" required
+										autocomplete="Destinazione" autofocus>
+									
+								</div>
+								</div>
+
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Totale Posti</label>
+
+								<div class="col-md-6">
+									<input type="number" id="seats" class="form-control"
+										th:field="*{seats}" placeholder="Posti" required
+										autocomplete="Posti" autofocus>
+									
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Prezzo</label>
+
+								<div class="col-md-6">
+									<input type="number" step="0.01" id="price" class="form-control"
+										th:field="*{price}" placeholder="Prezzo" required
+										autocomplete="prezzo" autofocus>
+										
+									
+								</div>
+							</div>
+
+						
+
+							<div class="form-group row">
+								<div class="col-md-6 offset-md-4">
+									<button type="submit" id="invio" class="btn btn-primary  btn-block">
+										Salva</button>
+								</div>
+							</div>
+
+							
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+		integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+		integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+		crossorigin="anonymous"></script>
+
+
+
+</body>
+</html>

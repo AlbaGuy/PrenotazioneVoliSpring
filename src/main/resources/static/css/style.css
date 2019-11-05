@@ -1,0 +1,25 @@
+body {
+   
+    background: white;
+}
+
+.navbar {
+    padding: 15px 10px;
+    background: white;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card{
+   
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+}
+span {
+	color:blue;
+}
+
+.myform{
+    display:none;
+}

@@ -1,0 +1,50 @@
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<div>
+	<p>
+		Codice Prenotazione: <span th:text="${ticketId}">Codice
+			Prenotazione</span>
+	</p>
+
+</div>
+
+
+
+<table class="table-hover table-bordered" width="400px">
+	<thead>
+
+		<tr>
+			<th>#</th>
+			<th>Nome</th>
+			<th>Cognome</th>
+			<th>Indirizzo</th>
+			<th>Telefono</th>
+			<th>N° Volo</th>
+			<th>Costo</th>
+		</tr>
+	</thead>
+	<tbody>
+
+		<tr th:each="passenger,pass : ${passengers}">
+		<td th:text="${pass.count}">#</td>
+			<td th:text="${passenger.firstName}">Nome</td>
+			<td th:text="${passenger.lastName}">Cognome</td>
+			<td th:text="${passenger.address}">Indirizzo<</td>
+			<td th:text="${passenger.phoneNumber}">Telefono<</td>
+			<td th:text="${flightId}">IdVolo</td>
+			<td th:text="${price} +' '+€">Totale</td>
+
+		</tr>
+
+	</tbody>
+
+</table>
+
+
+<div class="table">
+	<div th:text="'Totale: '+${totalPrice}+' '+€"
+		class="col-md-7 offset-md-8 text-md-right" style="margin-top:5px">Totale: 199 €</div>
+</div>
+
+

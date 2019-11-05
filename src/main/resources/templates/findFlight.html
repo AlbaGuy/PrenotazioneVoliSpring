@@ -1,0 +1,144 @@
+<meta charset="utf-8" />
+<div th:if="${listFlights.empty}">
+	<h1 align="center">Nessun volo trovato</h1>
+</div>
+
+<div th:unless="${listFlights.empty}">
+
+
+	<div align="center" style="margin-top: 50px">
+		<h1>Lista voli</h1>
+	</div>
+
+	<table class="table table-hover table-bordered"
+		style="margin-top: 30px">
+		<thead>
+
+			<tr>
+
+						<th></th>
+						<th>N° Volo</th>
+						<th>Data partenza</th>
+						<th>Partenza</th>
+						<th>Arrivo</th>
+						<th>Posti disponibili</th>
+						<th>Prezzo</th>
+						<th>Capienza</th>
+						<th sec:authorize="hasRole('ROLE_ADMIN')">Azioni</th>
+					</tr>
+		</thead>
+		<tbody>
+			<tr th:each="flight,count : ${listFlights}">
+
+
+
+				<td><label class="containers"> <input type="radio"
+						th:id="${flight.flightId}" name="your-extra-options"
+						th:class="${listSeatsAvaiable[count.count-1]}" th:value="${flight.DepartureDate}"><span
+						class="checkmark"></span>
+				</label></td>
+
+
+				<td th:text="${flight.flightId}">Numero Volo</td>
+
+				<td name="dates" th:id="${flight.DepartureDate}"
+					th:class="dateReverse+${count.count}"><script
+						th:inline="javascript">
+						
+						 var data =[[${flight.DepartureDate}]];
+						 var id =[[${flight.flightId}]];
+						 var count =[[${count.count}]];
+						 Number.prototype.zeroSinistra = function(base,chr){
+							    var  len = (String(base || 10).length - String(this).length)+1;
+							    return len > 0? new Array(len).join(chr || '0')+this : this;
+							}
+						 
+						 data = new Date(data);
+						var dateReverse = "Data: "+ ((data.getDate() > 9) ? data.getDate() : ('0' + data.getDate())) + '-'+((data.getMonth() > 8) ? (data.getMonth() + 1) : ('0' + (data.getMonth() + 1))) + '-'  + data.getFullYear()+"<br>"+"Ora: "+data.getHours().zeroSinistra()+":"+data.getMinutes().zeroSinistra()+":"+data.getSeconds().zeroSinistra();
+
+						  var x = document.getElementsByClassName('dateReverse'+count);
+						  x[0].innerHTML = dateReverse;
+</script></td>
+
+				<td th:text="${flight.departure}">Partenza</td>
+						<td th:text="${flight.destination}">Arrivo</td>
+
+						<td th:if="${listSeatsAvaiable[count.count-1]}<=0"
+							th:style="'color:red;'"
+							th:text="${listSeatsAvaiable[count.count-1]} +' '+Rimanenti"
+							name="seats">Posti</td>
+
+						<td th:unless="${listSeatsAvaiable[count.count-1]}<=0"
+							th:text="${listSeatsAvaiable[count.count-1]} +' '+Rimanenti"
+							name="seats">Posti</td>
+
+						<td th:text="${flight.price} +' '+€">Prezzo</td>
+						<td th:text="${flight.seats} + ' posti'"></td>
+						<td sec:authorize="hasRole('ROLE_ADMIN')"><a
+							class="navbar-brand" href="#"
+							th:href="@{'/flight/edit/' + ${flight.flightId}}"> <img
+								src="#" th:src="@{/images/modifica.png}" width="20" height="20"
+								class="d-inline-block align-top" alt="">Modifica
+						</a>&nbsp;&nbsp;<a class="navbar-brand" href="#"
+							th:href="@{'/flight/delete/' + ${flight.flightId}}"> <img
+								src="#" th:src="@{/images/elimina.png}" width="20" height="20"
+								class="d-inline-block align-top" alt="">Elimina
+						</a></td>
+					</tr>
+		</tbody>
+
+	</table>
+
+
+
+	<!-- Button trigger modal -->
+	<div class="table">
+		<button type="submit" data-toggle="modal"
+			data-target="#exampleModalCenter"
+			class="btn btn-primary col-md-2 offset-md-10">Prenota</button>
+
+	</div>
+
+</div>
+<script th:inline="javascript">
+			   $(function() {
+	var radio=  $( "input[type=radio][name=your-extra-options]" );
+
+	radio.each(function() {
+	var data= $(this).attr("value"); 
+	var seats= $(this).attr("class"); 
+	var indexData = data.indexOf(".0");
+	data= data.substring(0, indexData);
+	data = new Date(data);
+	data.setHours( data.getHours() - 2 );
+	var today = new Date();
+	if(data<=today || seats <= 0){
+		$(this).attr("disabled", true);
+		$(this).parent().find('span').css('background-color', '#e3342f99');
+	 }
+		});
+  });
+  
+  
+    $(function() {
+    	var dates=  $( "[name=dates]" );
+
+    	dates.each(function() {
+    	var data= $(this).attr("id"); 
+    	var indexData = data.indexOf(".0");
+    	data= data.substring(0, indexData);
+    	data = new Date(data);
+    	data.setHours( data.getHours() - 2 );
+    	var today = new Date();
+    	if(data<=today){
+    		$(this).css('color', 'red');
+    	 }
+    		});
+      });
+    
+    
+    $( "input[type=radio]").change(function(){
+    	var idVolo = $(this).attr("id"); 
+    	$("input[name='flightId']").val(idVolo);
+    });  
+    </script>

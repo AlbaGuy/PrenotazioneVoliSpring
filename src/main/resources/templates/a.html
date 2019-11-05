@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<input id="firstName1" value="sss">
+<input id="lastName1" value="zzz">
+<input id="flightId" value="13">
+	<button  type='button'  id="frm-submit" class="btn btn-primary"  name="post" value="Send">Prenota</button>
+	
+		<div id="postResultDiv" align="center"></div>
+<script language="javascript" type="text/javascript">
+
+
+$(document).ready(function() {
+	$("#frm-submit").click(function(){
+			var formData = {
+					firstName : $("#firstName1").val(),
+					lastName :$("#lastName1").val(),
+					flightId : $("#flightId").val()
+			}
+
+			// DO POST
+			$.ajax({
+				type : "POST",
+				contentType : "application/json",
+				url : "savePassenger77",
+				data : JSON.stringify(formData),
+				dataType : 'json',
+				success : function(result) {
+					if (result.status == "success") {
+						$("#postResultDiv").html(
+								"" + result.data.bookName
+										+ "Post Successfully! <br>"
+										+ "---> Congrats !!" + "</p>");
+					} else {
+						$("#postResultDiv").html("<strong>Error</strong>");
+					}
+					console.log(result);
+				},
+				error : function(e) {
+					alert("Error!")
+					console.log("ERROR: ", e);
+				}
+			});
+			});
+     
+    });
+
+</script>
+</body>
+</html>

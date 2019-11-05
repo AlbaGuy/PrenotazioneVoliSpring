@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>login</title>
+<th:block th:include="fragments/headerinc :: head"></th:block>
+</head>
+<body>
+
+
+	<th:block th:include="fragments/header :: header"></th:block>
+
+	<div class="container" sec:authorize="!isAuthenticated()"
+		style="margin-top: 100px;">
+		<div class="row justify-content-center">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-header">Accedi</div>
+
+					<div class="card-body">
+						<form method="POST" th:action="@{/login}" class="form-signin">
+
+
+							<div class="form-group row">
+								<label for="email" class="col-md-4 col-form-label text-md-right">Username</label>
+
+								<div class="col-md-6">
+									<input type="text" class="form-control" id="username"
+										name="username" placeholder="Username" autocomplete="Email"
+										autofocus>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="password"
+									class="col-md-4 col-form-label text-md-right">Password</label>
+
+								<div class="col-md-6">
+									<input type="password" class="form-control" name="password"
+										id="password" placeholder="Password" autocomplete="Password"
+										autofocus>
+
+								</div>
+							</div>
+
+
+							<div class="form-group row">
+								<div class="col-md-6 offset-md-4">
+									<button type="submit" name="login-submit" id="login-submit"
+										class="btn btn-primary  btn-block">Accedi</button>
+
+								</div>
+							</div>
+
+
+
+							<div class="form-group row">
+								<div class="col-md-6 offset-md-4 text-right">
+
+									<h6>
+										Non sei registrato? <a href="#" th:href="@{/registration}">Registrati</a>
+									</h6>
+								</div>
+							</div>
+
+							<div th:if="${param.error}"
+								class="col-md-9 offset-md-2 alert alert-danger text-md-center">Credenziali
+								non corrette!</div>
+
+							<div th:if="${param.logout}">
+								<div
+									class="col-md-9 offset-md-2 alert alert-success text-md-center">Log
+									out effettuato con successo!</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+</body>
+</html>

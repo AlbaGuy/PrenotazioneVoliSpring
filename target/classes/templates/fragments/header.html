@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+</head>
+
+<body>
+
+	<!-- Image and text -->
+	<div th:fragment="header">
+
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="#" th:href="@{/}"><img
+				th:src="@{/images/volo.png}" width="30" height="30"
+				class="d-inline-block align-top" alt="">home</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><a class="nav-link" href="#"
+						th:href="@{/flight}" sec:authorize="isAuthenticated()">Voli</a></li>
+					<li class="nav-item active"
+						sec:authorize="isAuthenticated() AND hasRole('ROLE_ADMIN')"><a
+						class="nav-link" href="#" th:href="@{/newFlight}">Aggiungi
+							Volo</a></li>
+					<li class="nav-item active" sec:authorize="isAuthenticated()"><a
+						class="nav-link" href="#" th:href="@{/ticketDetails}">Biglietti
+							Acquistati</a></li>
+				</ul>
+
+				<ul class="navbar-nav mr-auto" sec:authorize="isAuthenticated()"
+					th:if="${#httpServletRequest.requestURI == '/flight'}">
+
+					<li><input id="flightText" class="form-control col-lg-12"
+						type="text" placeholder="Cerca" aria-label="Search"></li>
+					<li>
+						<button id="searchFlight"
+							class="btn btn-outline-success btn-md my-0 ml-sm-1 col-lg-12" type="button">Cerca</button>
+					</li>
+				</ul>
+
+
+				<ul class="nav navbar-nav navbar-right">
+
+
+					<div class="navbar-text" sec:authorize="isAuthenticated()">
+						Utente: <span sec:authentication="name"></span>
+					</div>
+					<li class="nav-item active" sec:authorize="isAuthenticated()"><a
+						class="nav-link" th:href="@{/logout}">Logout</a></li>
+
+
+
+
+
+					<li class="nav-item active" sec:authorize="!isAuthenticated()"><a
+						class="nav-link" href="#" th:href="@{/login}">Accedi</a></li>
+					<li class="nav-item active" sec:authorize="!isAuthenticated()"><a
+						class="nav-link" href="#" th:href="@{/registration}">Registrati</a></li>
+				</ul>
+
+
+
+
+
+
+			</div>
+
+
+
+		</nav>
+
+	</div>
+
+</body>
+</html>

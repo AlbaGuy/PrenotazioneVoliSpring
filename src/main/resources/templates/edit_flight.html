@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flights</title>
+<style>
+.table {
+	margin: auto;
+	width: 50% !important;
+}
+</style>
+<th:block th:include="fragments/headerinc :: head"></th:block>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	<th:block th:include="fragments/header :: header"></th:block>
+
+	   
+ <div class="container" style="margin-top: 100px;">
+		<div class="row justify-content-center">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-header">Modifica Prodotto</div>
+
+					<div class="card-body">
+						
+			<form action="#" id="form" th:action="@{/saveFlight}" th:object="${flight}"
+			method="post"> 
+	   
+	    <script th:inline="javascript">
+	   $(function() {
+			var inputData =  $( "input[type=text][name=data]");
+			 var data =[[${flight.DepartureDate}]];
+			 var indexData = data.indexOf(".0");
+			    data= data.substring(0, indexData);
+			   data = new Date(data);
+			   
+			   Number.prototype.zeroSinistra = function(base,chr){
+				    var  len = (String(base || 10).length - String(this).length)+1;
+				    return len > 0? new Array(len).join(chr || '0')+this : this;
+				}
+			 
+			 data = new Date(data);
+			 var risultato=((data.getDate() > 9) ? data.getDate() : ('0' + data.getDate())) + '-'+((data.getMonth() > 8) ? (data.getMonth() + 1) : ('0' + (data.getMonth() + 1))) + '-'  + data.getFullYear()+" "+data.getHours().zeroSinistra()+":"+data.getMinutes().zeroSinistra()+":"+data.getSeconds().zeroSinistra();
+
+			 inputData.val(risultato);
+		  });
+	   
+	   /*
+	   function doSomething() {
+			var inputData =  $( "input[type=text][name=data]" );
+			 var data =[[${flight.DepartureDate}]];
+			 var indexData = data.indexOf(".0");
+			    data= data.substring(0, indexData);
+			   data = new Date(data);
+			   
+			   Number.prototype.zeroSinistra = function(base,chr){
+				    var  len = (String(base || 10).length - String(this).length)+1;
+				    return len > 0? new Array(len).join(chr || '0')+this : this;
+				}
+			 
+			 data = new Date(data);
+			 var risultato=((data.getDate() > 9) ? data.getDate() : ('0' + data.getDate())) + '-'+((data.getMonth() > 8) ? (data.getMonth() + 1) : ('0' + (data.getMonth() + 1))) + '-'  + data.getFullYear()+" "+data.getHours().zeroSinistra()+":"+data.getMinutes().zeroSinistra()+":"+data.getSeconds().zeroSinistra();
+
+			 inputData.val(risultato);
+		   
+		 }
+	   $(document).ready(function(){
+		   $('#form').submit();
+		 });
+	   
+	*/
+	   
+	</script>  
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">ID Volo</label>
+
+								<div class="col-md-6">
+									<input type="text"  class="form-control" th:field="*{flightId}" readonly="readonly" />
+									
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Data Partenza</label>
+
+								<div class="col-md-6">
+									<input type="text" name="data" id="DepartureDate" th:field="*{DepartureDate}" th:onload="'doSomething();'"  class="form-control" 
+										placeholder="YYYY-MM-DD HH:MM:SS"  required autocomplete="Data Partenza"
+										autofocus>
+								</div>
+							</div>
+							
+								<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Città di partenza</label>
+
+								<div class="col-md-6">
+									<input type="text" class="form-control"
+										th:field="*{departure}" placeholder="Città di partenza" required
+										autocomplete="Città di partenza" autofocus>
+									
+								</div>
+								</div>
+							
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Città d' arrivo</label>
+
+								<div class="col-md-6">
+									<input type="text" class="form-control"
+										th:field="*{destination}" placeholder="Città d' arrivo" required
+										autocomplete="Destinazione" autofocus>
+									
+								</div>
+								</div>
+
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Totale Posti</label>
+
+								<div class="col-md-6">
+									<input type="text" class="form-control" th:field="*{seats}" 
+										placeholder="Posti Disponibili" required autocomplete="Posti Disponibili"
+										autofocus>
+								</div>
+							</div>
+
+						
+
+							<div class="form-group row">
+								<label for="name" class="col-md-4 col-form-label text-md-right">Prezzo</label>
+
+								<div class="col-md-6">
+									<input type="text" class="form-control" th:field="*{price}" placeholder="Prezzo" required
+										autocomplete="Prezzo" autofocus>
+								</div>
+							</div>
+
+
+
+							<div class="form-group row mb-0">
+								<div class="col-md-6 offset-md-4">
+									<button type="submit" id="salva"  class="btn btn-primary  btn-block">
+										Salva</button>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>
+

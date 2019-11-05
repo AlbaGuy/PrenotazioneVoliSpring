@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flights</title>
+<style>
+#tabPag {
+	margin: auto;
+	width: 65% !important;
+}
+</style>
+<th:block th:include="fragments/headerinc :: head"></th:block>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	<th:block th:include="fragments/header :: header"></th:block>
+
+
+	<div th:if="${ passengers.empty}">
+		<h1 align="center">Nessun biglietto acquistato</h1>
+	</div>
+
+	<div th:unless="${passengers.empty}">
+
+		<div align="center" style="margin-top: 50px">
+			<h1>Storico Biglietti</h1>
+		</div>
+		<div id="tabPag">
+			<table class="table table-hover table-bordered"
+				style="margin-top: 30px">
+				<thead>
+
+					<tr>
+						<th># Passeggero</th>
+						<th>Nome</th>
+						<th>Cognome</th>
+						<th>Indirizzo</th>
+						<th>Telefono</th>
+						<th>Codice Prenotazione</th>
+						<th>Partenza</th>
+						<th>Destinazione</th>
+						<th>Numero Volo</th>
+						<th>Prezzo</th>
+						<th>Stato</th>
+					</tr>
+				</thead>
+				<tbody>
+
+					<tr th:each="passenger,pass : ${passengers}">
+						<div th:if="${(param.pageNo == null)}">
+							<td th:if="${pass.count}==10" th:text="${pass.count}">#</td>
+							<td th:unless="${pass.count}==10" th:text="'0'+${pass.count}">#</td>
+						</div>
+						<div th:unless="${(param.pageNo == null)}">
+						<td th:with="ultimaPosizione=${param.pageNo}+${pass.count-1}"
+							th:if="${pass.count}==10" th:text="${ultimaPosizione}+1">#</td>
+						<td th:unless="${pass.count}==10"
+							th:text="${param.pageNo}+${pass.count}">#</td>
+						</div>
+						<td th:text="${passenger.firstName}">Nome</td>
+						<td th:text="${passenger.lastName}">Cognome</td>
+						<td th:text="${passenger.address}">Indirizzo</td>
+						<td th:text="${passenger.phoneNumber}">Telefono</td>
+						<td th:text="${passenger.ticketId}">Codice Prenotazione</td>
+						<td th:text="${passenger.departure}">Partenza</td>
+						<td th:text="${passenger.destination}">Arrivo</td>
+						<td th:each="volo : ${passenger.flightId}">
+							<div th:text="${volo.flightId}"></div>
+						</td>
+						<td th:text="${passenger.price} +' '+€"></td>
+						<td style="color: #38c172">CONFERMATO</td>
+					</tr>
+				</tbody>
+
+
+			</table>
+			<ul class="pagination" th:if="${size}!= 0">
+				<li  th:each="i,iteration : ${#numbers.sequence( 0, size)}"
+					class="page-item">
+					<a class="page-link" href="#"
+					th:text="${i+1}" th:id="'pagina'+${i+1}"
+					th:href="@{/ticketDetails(pageNo=${i})}">#</a></li>
+			</ul>
+
+		</div>
+	</div>
+
+
+	<script th:src="@{/js/flight.js}"></script>
+</body>
+</html>
+

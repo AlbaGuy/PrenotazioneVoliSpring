@@ -1,0 +1,787 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flights</title>
+<style>
+.table {
+	margin: auto;
+	width: 55% !important;
+}
+/* The container */
+.containers {
+	position: relative;
+	margin-right: 19px;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.containers input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 20px;
+	width: 20px;
+	background-color: #38c172;
+	border-radius: 10px;
+}
+
+/* When the checkbox is checked, add a blue background */
+.containers input:checked ~ .checkmark {
+	background-color: #00a2c5;
+}
+</style>
+<th:block th:include="fragments/headerinc :: head"></th:block>
+
+</head>
+<body>
+
+	<th:block th:include="fragments/header :: header"></th:block>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.js"
+		integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+
+	<div th:if="${listFlights.empty}">
+		<h1 align="center">Lista voli vuota</h1>
+	</div>
+
+	<div th:unless="${listFlights.empty}">
+
+		<div id="tableFlight">
+			<div align="center" style="margin-top: 50px">
+				<h1>Lista Voli</h1>
+			</div>
+
+			<table class="table table-hover table-bordered"
+				style="margin-top: 30px">
+				<thead>
+
+					<tr>
+
+						<th></th>
+						<th>N° Volo</th>
+						<th>Data partenza</th>
+						<th>Partenza</th>
+						<th>Arrivo</th>
+						<th>Posti disponibili</th>
+						<th>Prezzo</th>
+						<th>Capienza</th>
+						<th sec:authorize="hasRole('ROLE_ADMIN')">Azioni</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="flight,pass : ${listFlights}">
+
+
+
+						<td><label class="containers"> <input type="radio"
+								th:id="${flight.flightId}" name="your-extra-options"
+								th:class="${listSeatsAvaiable[pass.count-1]}"
+								th:value="${flight.DepartureDate}"><span
+								class="checkmark"></span>
+						</label></td>
+
+
+						<td th:text="${flight.flightId}">Numero Volo</td>
+
+						<td name="dates" th:id="${flight.DepartureDate}"><script
+								th:inline="javascript">
+ var data =[[${flight.DepartureDate}]];
+ var id =[[${flight.flightId}]];
+
+ Number.prototype.zeroSinistra = function(base,chr){
+	    var  len = (String(base || 10).length - String(this).length)+1;
+	    return len > 0? new Array(len).join(chr || '0')+this : this;
+	}
+ 
+ data = new Date(data);
+ document.write("Data: "+ ((data.getDate() > 9) ? data.getDate() : ('0' + data.getDate())) + '-'+((data.getMonth() > 8) ? (data.getMonth() + 1) : ('0' + (data.getMonth() + 1))) + '-'  + data.getFullYear()+"<br>"+"Ora: "+data.getHours().zeroSinistra()+":"+data.getMinutes().zeroSinistra()+":"+data.getSeconds().zeroSinistra());
+</script></td>
+
+						<td th:text="${flight.departure}">Partenza</td>
+						<td th:text="${flight.destination}">Arrivo</td>
+
+						<td th:if="${listSeatsAvaiable[pass.count-1]}<=0"
+							th:style="'color:red;'"
+							th:text="${listSeatsAvaiable[pass.count-1]} +' '+Rimanenti"
+							name="seats">Posti</td>
+
+						<td th:unless="${listSeatsAvaiable[pass.count-1]}<=0"
+							th:text="${listSeatsAvaiable[pass.count-1]} +' '+Rimanenti"
+							name="seats">Posti</td>
+
+						<td th:text="${flight.price} +' '+€">Prezzo</td>
+						<td th:text="${flight.seats} + ' posti'"></td>
+						<td sec:authorize="hasRole('ROLE_ADMIN')"><a
+							class="navbar-brand" href="#"
+							th:href="@{'/flight/edit/' + ${flight.flightId}}"> <img
+								src="#" th:src="@{/images/modifica.png}" width="20" height="20"
+								class="d-inline-block align-top" alt="">Modifica
+						</a>&nbsp;&nbsp;<a class="navbar-brand" href="#"
+							th:href="@{'/flight/delete/' + ${flight.flightId}}"> <img
+								src="#" th:src="@{/images/elimina.png}" width="20" height="20"
+								class="d-inline-block align-top" alt="">Elimina
+						</a></td>
+					</tr>
+				</tbody>
+
+			</table>
+
+			<!-- Button trigger modal -->
+			<div class="table">
+				<button type="submit" data-toggle="modal"
+					data-target="#exampleModalCenter"
+					class="btn btn-primary col-md-2 offset-md-10">Prenota</button>
+
+			</div>
+
+		</div>
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModalCenter" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalCenterTitle"
+			aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered"
+				style="widtht: 800px;" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalCenterTitle">Prenotazione</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+
+
+						<div id="forms">
+
+							<div class="form-group row">
+								<label for="name" class="col-md-2 col-form-label text-md-right">Passeggeri:</label>
+
+								<div class="col-md-10">
+									<select class="form-control" id="myselect">
+										<script th:inline="javascript">
+     for(i=0; i<=10;i++){
+	document.write((i == 0) ? "<option id='"+i+"' disabled selected>"+i+"</option>"  : "<option id='"+i+"'>"+i+"</option>");
+    }
+</script>
+
+									</select>
+								</div>
+							</div>
+
+
+
+
+							<form id="form1" class="myform" method="POST"
+								th:action="savePassenger1">
+
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-3 col-form-label text-md-left text-success">Passeggero
+										1</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="input1"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+
+							</form>
+
+
+
+
+							<form id="form2" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-3 col-form-label text-md-left text-success">Passeggero
+										2</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="idVolo"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+
+							<form id="form3" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-3 col-form-label text-md-left text-success">Passeggero
+										3</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+
+							<form id="form4" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-3 col-form-label text-md-left text-success">Passeggero
+										4</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+
+							<form id="form5" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name" class="col-md-3 col-form-label text-md-left"
+										text-success>Passeggero 5</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+							<form id="form6" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-3 col-form-label text-md-left text-success">Passeggero
+										6</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+
+							<form id="form7" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-3 col-form-label text-md-left text-success">Passeggero
+										7</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+							<form id="form8" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-3 col-form-label text-md-left text-success">Passeggero
+										8</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+							<form id="form9" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-3 col-form-label text-md-left text-success">Passeggero
+										9</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+							<form id="form10" class="myform" method="POST"
+								th:action="savePassenger1">
+								<div class="form-group row">
+									<label for="name"
+										class="col-md-4 col-form-label text-md-left text-success">Passeggero
+										10</label>
+
+								</div>
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Nome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="firstName" id="firstName"
+											th:field="*{passenger.firstName}" class="form-control"
+											placeholder="Nome" required autocomplete="firstName"
+											autofocus> <input type="hidden" name="flightid"
+											th:field="*{tickets.flightId}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Cognome:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="lastName" id="lastName"
+											th:field="*{passenger.lastName}" class="form-control"
+											placeholder="Cognome" required autocomplete="lastName"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Indirizzo:</label>
+
+									<div class="col-md-10">
+										<input type="text" name="address" id="address"
+											th:field="*{passenger.address}" class="form-control"
+											placeholder="Indirizzo" required autocomplete="address"
+											autofocus>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="name" class="col-md-2 col-form-label text-md-right">Telefono:</label>
+
+									<div class="col-md-10">
+										<input type="number" name="phoneNumber" id="phoneNumber"
+											th:field="*{passenger.phoneNumber}" class="form-control"
+											placeholder="Telefono" required autocomplete="phoneNumber"
+											autofocus>
+									</div>
+								</div>
+							</form>
+
+
+						</div>
+						<div></div>
+
+						<div class="form-group row">
+							<div id="form_output"></div>
+						</div>
+
+						<div class="form-group row">
+							<div id="form_buttons" class="col-md-12">
+
+								<button type='button' id="frm-submit"
+									class="offset-8 btn btn-primary text-right" name="post"
+									value="Send">Prenota</button>
+								<button type="button" class="btn btn-secondary text-right"
+									data-dismiss="modal">Chiudi</button>
+							</div>
+						</div>
+						<div class="form-group row">
+							<div id="form_outputResponse" class="col-md-12 offset-1"></div>
+							<div id="printButton">
+								<button id='btnPrint'
+									class='btn btn-primary col-md-12 offset-md-10'
+									style="display: none;">Stampa</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+
+	<script th:src="@{/js/flight.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+
+
+</body>
+</html>

@@ -9,6 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 
 @Entity
 public class Flight {
@@ -16,10 +20,17 @@ public class Flight {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long flightId;
+	
 	private Timestamp departureDate;
+	@NotEmpty(message = "Inserire luogo di partenza!")
 	private String departure;
+	@NotEmpty(message = "Inserire destinazione!")
 	private String destination;
+	@NotNull(message = "Inserire capienza!")
+	@Min(value=0,message = "Inserire valore maggiore o uguale a 0!")
 	private int seats;
+	@NotNull(message = "Inserire prezzo!")
+	@Min(value=0,message = "Inserire valore maggiore o uguale a 0!")
 	private Float price;
 
 	@OneToMany(cascade = CascadeType.ALL)

@@ -13,8 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 
 @Entity
 public class Passenger {
@@ -22,20 +22,11 @@ public class Passenger {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long passengerId;
-	//@NotNull(com.voli.model.Passenger.firstName.required)
-	@Size( max = 25)
 	private String firstName;
-	@NotNull
-	@Size( max = 25)
 	private String lastName;
-	@NotNull
-	@Size( max = 30)
 	private String address;
-	@NotNull
-	@Size( min = 10 , max = 10)
+	@Size( min = 10 )
 	private String phoneNumber;
-	@NotNull
-	@Size(max = 40)
 	private String email;
 
 	@ManyToOne

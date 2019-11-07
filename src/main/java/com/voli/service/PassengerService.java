@@ -14,7 +14,6 @@ import com.voli.model.Passenger;
 import com.voli.repository.PassengerRepository;
 
 @Service
-@Transactional
 public class PassengerService {
 
 	@Autowired

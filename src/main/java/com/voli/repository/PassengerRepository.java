@@ -4,11 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.voli.controllers.dto.FindTicketIdAndPassengerDto;
 import com.voli.model.Passenger;
-@Transactional
+
 public interface PassengerRepository extends JpaRepository<Passenger, Long> {
 
 	List<Passenger> findByEmail(String email);

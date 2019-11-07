@@ -20,7 +20,6 @@ public class Ticket {
 
 	@ManyToOne
 	@JoinColumn(name="flightId" , referencedColumnName="flightId")
-	//@OnDelete(action = OnDeleteAction.CASCADE)
 	private Flight flightId;
 
 	 @ManyToMany(mappedBy = "tickets")

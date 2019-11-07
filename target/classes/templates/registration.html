@@ -46,7 +46,7 @@
 
 								<div class="col-md-6">
 									<input type="text" id="lastName" class="form-control"
-										th:field="*{lastName}" placeholder="Cognome" required
+										th:field="*{lastName}" placeholder="Cognome"
 										autocomplete="Cognome" autofocus>
 									<div class="col-md-12  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
 										th:each="error: ${#fields.errors('lastName')}"
@@ -58,9 +58,12 @@
 								<label for="name" class="col-md-4 col-form-label text-md-right">E-mail</label>
 
 								<div class="col-md-6">
-									<input type="email" id="email" class="form-control"
-										th:field="*{email}" placeholder="E-mail" required
+									<input type="text" id="email" class="form-control"
+										th:field="*{email}" placeholder="E-mail" 
 										autocomplete="E-mail" autofocus>
+											<div class="col-md-12  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
+										th:each="error: ${#fields.errors('email')}"
+										th:text="${error}">Validation error</div>
 										
 								</div>
 							</div>
@@ -70,9 +73,9 @@
 									Email</label>
 
 								<div class="col-md-6">
-									<input type="email" id="confirmEmail" class="form-control"
+									<input type="text" id="confirmEmail" class="form-control"
 										th:field="*{confirmEmail}" placeholder="Conferma email"
-										required autocomplete="confirmEmail" autofocus>
+										 autocomplete="confirmEmail" autofocus>
 									<div class="col-md-12  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
 										th:each="error: ${#fields.errors('confirmEmail')}"
 										th:text="${error}">Validation error</div>
@@ -84,7 +87,7 @@
 
 								<div class="col-md-6">
 									<input type="password" id="password" class="form-control"
-										th:field="*{password}" placeholder="password" required
+										th:field="*{password}" placeholder="password" 
 										autocomplete="password" autofocus>
 									<div class="col-md-12  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
 										th:each="error: ${#fields.errors('password')}"
@@ -99,7 +102,7 @@
 								<div class="col-md-6">
 									<input type="password" id="ConfirmPassword" class="form-control"
 										th:field="*{ConfirmPassword}" placeholder="Conferma Password"
-										required autocomplete="ConfirmPassword" autofocus>
+										 autocomplete="ConfirmPassword" autofocus>
 									<div class="col-md-12  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
 										th:each="error: ${#fields.errors('ConfirmPassword')}"
 										th:text="${error}">Validation error</div>
@@ -128,9 +131,6 @@
 									con successo!</div>
 							</div>
 							
-							<div class="col-md-8 offset-md-2 alert alert-danger text-md-center"
-										th:each="error: ${#fields.errors('email')}"
-										th:text="${error}">Errore di validazione</div>
 							
 							<div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.errors('global')}" th:text="${error}" class="col-md-8 offset-md-2 alert alert-danger text-md-center">Errore
 								di validazione!</div>

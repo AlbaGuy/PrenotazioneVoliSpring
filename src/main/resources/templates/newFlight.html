@@ -48,7 +48,7 @@ $(document).ready(function(){
 
 								<div class="col-md-6">
 									<input type="datetime" id="departureDate" class="form-control"
-										th:field="*{departureDate}" placeholder="YYYY-MM-DD HH:MM:SS" required
+										th:field="*{departureDate}" placeholder="YYYY-MM-DD HH:MM:SS" 
 										autocomplete="Data Partenza" autofocus>
 								</div>
 								
@@ -59,20 +59,25 @@ $(document).ready(function(){
 
 								<div class="col-md-6">
 									<input type="text" id="seats" class="form-control"
-										th:field="*{departure}" placeholder="Città di partenza" required
+										th:field="*{departure}" placeholder="Città di partenza" 
 										autocomplete="Città di partenza" autofocus>
-									
+									<div class="  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
+										th:each="error: ${#fields.errors('departure')}"
+										th:text="${error}">Validation error</div>
 								</div>
-								</div>
+							</div>
+							
 							
 							<div class="form-group row">
 								<label for="name" class="col-md-4 col-form-label text-md-right">Città d' arrivo</label>
 
 								<div class="col-md-6">
 									<input type="text" id="seats" class="form-control"
-										th:field="*{destination}" placeholder="Destinazione" required
+										th:field="*{destination}" placeholder="Destinazione" 
 										autocomplete="Destinazione" autofocus>
-									
+									<div class="  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
+										th:each="error: ${#fields.errors('destination')}"
+										th:text="${error}">Validation error</div>
 								</div>
 								</div>
 
@@ -81,9 +86,11 @@ $(document).ready(function(){
 
 								<div class="col-md-6">
 									<input type="number" id="seats" class="form-control"
-										th:field="*{seats}" placeholder="Posti" required
+										th:field="*{seats}" placeholder="Posti" 
 										autocomplete="Posti" autofocus>
-									
+									<div class="  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
+										th:each="error: ${#fields.errors('seats')}"
+										th:text="${error}">Validation error</div>
 								</div>
 							</div>
 
@@ -92,9 +99,11 @@ $(document).ready(function(){
 
 								<div class="col-md-6">
 									<input type="number" step="0.01" id="price" class="form-control"
-										th:field="*{price}" placeholder="Prezzo" required
+										th:field="*{price}" placeholder="Prezzo" 
 										autocomplete="prezzo" autofocus>
-										
+										<div class="  alert alert-danger text-md-center" style="margin-top:20px;margin-bottom:0px"
+										th:each="error: ${#fields.errors('price')}"
+										th:text="${error}">Validation error</div>
 									
 								</div>
 							</div>
@@ -109,7 +118,9 @@ $(document).ready(function(){
 							</div>
 
 							
+	
 						</form>
+			
 					</div>
 				</div>
 			</div>

@@ -8,9 +8,6 @@ import org.springframework.stereotype.Service;
 import com.voli.model.Flight;
 import com.voli.repository.FlightRepository;
 
-
-
-
 @Service
 public class FlightService {
 	@Autowired
@@ -24,9 +21,10 @@ public class FlightService {
 		List<Flight> flights = repo.findFlight(destination);
 		return flights;
 	}
+
 	public Flight get(long id) {
 		return repo.findById(id).get();
-		
+
 	}
 
 	public void delete(long id) {
@@ -35,6 +33,5 @@ public class FlightService {
 
 	public void save(Flight flight) {
 		repo.save(flight);
-		repo.flush();
 	}
 }
